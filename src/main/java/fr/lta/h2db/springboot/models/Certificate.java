@@ -1,10 +1,6 @@
-package com.baeldung.h2db.springboot.models;
-
-import java.time.LocalDateTime;
+package fr.lta.h2db.springboot.models;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -16,28 +12,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "letters")
+@Table(name = "certificates")
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Letter {
-	
+public class Certificate {
+
 	@Id
 	@GeneratedValue
 	private Integer id;
 
-	@Enumerated(EnumType.STRING)
-	private LetterCode code;
-
 	@ManyToOne
-	@JoinColumn(name = "certificate_id")
-	private Certificate certificate;
+	@JoinColumn(name= "postman_id")
+	private Postman postman;
 
-	@ManyToOne
-	@JoinColumn(name = "aid_id")
-	private Aid aid;
+	private String number;
 
-	private LocalDateTime createdAt;
 }

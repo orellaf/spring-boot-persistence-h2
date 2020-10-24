@@ -1,4 +1,4 @@
-package com.baeldung.h2db.springboot.models;
+package fr.lta.h2db.springboot.models;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;

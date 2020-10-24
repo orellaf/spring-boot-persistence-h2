@@ -1,4 +1,4 @@
-package com.baeldung.h2db.springboot.models;
+package fr.lta.h2db.springboot.models;
 
 import java.time.LocalDateTime;
 

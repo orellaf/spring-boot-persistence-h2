@@ -1,4 +1,4 @@
-package com.baeldung;
+package fr.lta;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,17 +16,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.baeldung.h2db.springboot.SpringBootH2Application;
-import com.baeldung.h2db.springboot.daos.AidRepository;
-import com.baeldung.h2db.springboot.daos.CertificateRepository;
-import com.baeldung.h2db.springboot.daos.LetterRepository;
-import com.baeldung.h2db.springboot.daos.PostmanRepository;
-import com.baeldung.h2db.springboot.models.Aid;
-import com.baeldung.h2db.springboot.models.Certificate;
-import com.baeldung.h2db.springboot.models.Letter;
-import com.baeldung.h2db.springboot.models.LetterCode;
-import com.baeldung.h2db.springboot.models.Postman;
-import com.baeldung.h2db.springboot.specifications.LetterSpecifications;
+import fr.lta.h2db.springboot.SpringBootH2Application;
+import fr.lta.h2db.springboot.daos.AidRepository;
+import fr.lta.h2db.springboot.daos.CertificateRepository;
+import fr.lta.h2db.springboot.daos.LetterRepository;
+import fr.lta.h2db.springboot.daos.PostmanRepository;
+import fr.lta.h2db.springboot.models.Aid;
+import fr.lta.h2db.springboot.models.Certificate;
+import fr.lta.h2db.springboot.models.Letter;
+import fr.lta.h2db.springboot.models.LetterCode;
+import fr.lta.h2db.springboot.models.Postman;
+import fr.lta.h2db.springboot.specifications.LetterSpecifications;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringBootH2Application.class)

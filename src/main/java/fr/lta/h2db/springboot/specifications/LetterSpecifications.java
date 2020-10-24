@@ -1,14 +1,14 @@
-package com.baeldung.h2db.springboot.specifications;
+package fr.lta.h2db.springboot.specifications;
 
 import javax.persistence.criteria.JoinType;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.baeldung.h2db.springboot.models.Aid_;
-import com.baeldung.h2db.springboot.models.Certificate_;
-import com.baeldung.h2db.springboot.models.Letter;
-import com.baeldung.h2db.springboot.models.Letter_;
-import com.baeldung.h2db.springboot.models.Postman_;
+import fr.lta.h2db.springboot.models.Aid_;
+import fr.lta.h2db.springboot.models.Certificate_;
+import fr.lta.h2db.springboot.models.Letter;
+import fr.lta.h2db.springboot.models.Letter_;
+import fr.lta.h2db.springboot.models.Postman_;
 
 public abstract class LetterSpecifications {
 

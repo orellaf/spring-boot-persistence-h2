@@ -1,4 +1,4 @@
-package com.baeldung.h2db.springboot;
+package fr.lta.h2db.springboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
