@@ -95,7 +95,7 @@ public class SpringBootH2IntegrationTest2 {
 			assertEquals(3, letterRepository.count());
 		}
 
-		var lettersFilter = letterRepository.findAll(LetterSpecifications.idRH(idRH),
+		var lettersFilter = letterRepository.findAll(LetterSpecifications.idRH(idRH).and(LetterSpecifications.orderByMostRecent()),
 		// sort in the specification
 //				PageRequest.of(0, 20, Sort.by("createdAt").descending()));
 				PageRequest.of(0, 20));
