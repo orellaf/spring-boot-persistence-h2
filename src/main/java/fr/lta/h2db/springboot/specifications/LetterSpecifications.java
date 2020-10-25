@@ -19,8 +19,9 @@ public abstract class LetterSpecifications {
 					.get(Postman_.idRH);
 			var aidPath = root.join(Letter_.aid, JoinType.LEFT).join(Aid_.postman, JoinType.LEFT).get(Postman_.idRH);
 
+			query.orderBy(criteriaBuilder.desc(root.get(Letter_.createdAt)));
+			
 			return criteriaBuilder.or(criteriaBuilder.equal(certPath, idRh), criteriaBuilder.equal(aidPath, idRh));
-
 		};
 	}
 

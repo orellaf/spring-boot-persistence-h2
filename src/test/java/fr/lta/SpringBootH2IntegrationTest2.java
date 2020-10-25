@@ -90,23 +90,23 @@ public class SpringBootH2IntegrationTest2 {
 			assertEquals(2, certificateRepository.count());
 			// create a letter for an other certificate
 			var letter = Letter.builder().createdAt(LocalDateTime.now().minus(Duration.ofDays(5)))
-					.certificate(certificate)
-					.code(LetterCode.BBB)
-					.build();
+					.certificate(certificate).code(LetterCode.BBB).build();
 			letterRepository.save(letter);
 			assertEquals(3, letterRepository.count());
 		}
 
 		var lettersFilter = letterRepository.findAll(LetterSpecifications.idRH(idRH),
-				PageRequest.of(0, 20, Sort.by("createdAt").descending()));
+		// sort in the specification
+//				PageRequest.of(0, 20, Sort.by("createdAt").descending()));
+				PageRequest.of(0, 20));
 		assertEquals(2, lettersFilter.getTotalElements());
-		
+
 		var letters = lettersFilter.stream().collect(Collectors.toList());
 
 		assertEquals(LetterCode.AAA, letters.get(0).getCode());
 		// the more recent letter is first in the stream
 		assertTrue(letters.get(0).getCreatedAt().isAfter(letters.get(1).getCreatedAt()));
-		
+
 		// convert pageable parameter in pagerequest
 //		Pageable p = null;
 //		PageRequest.of(p.getPageNumber(), p.getPageSize());
