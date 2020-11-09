@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -24,8 +25,12 @@ public class Aid {
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name= "postman_id")
+	@JoinColumn(name = "postman_id")
 	private Postman postman;
 
 	private String requestNumber;
+
+	@ManyToOne
+	@JoinColumn(name = "certificate_id", nullable = false)
+	private Certificate certificate;
 }

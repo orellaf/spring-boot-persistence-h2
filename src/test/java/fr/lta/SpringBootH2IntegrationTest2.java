@@ -11,9 +11,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import fr.lta.h2db.springboot.SpringBootH2Application;
@@ -44,8 +44,29 @@ public class SpringBootH2IntegrationTest2 {
 	@Autowired
 	private LetterRepository letterRepository;
 
-	@Test
-	public void contextLoads() {
+	@Test(expected = DataIntegrityViolationException.class)
+	public void test_with_certificate_null() throws Exception {
+		var idRH = "P8963";
+		var postman = Postman.builder().idRH(idRH).build();
+		postmanRepository.save(postman);
+		assertEquals(1, postmanRepository.count());
+
+		var aid = Aid.builder().certificate(null).requestNumber("AR569").postman(postman).build();
+		aid = aidRepository.save(aid); // throw exception
+
+	}
+
+	@Test(expected = InvalidDataAccessApiUsageException.class)
+	public void test_with_certificate_unknown() throws Exception {
+		var idRH = "P8963";
+		var postman = Postman.builder().idRH(idRH).build();
+		postmanRepository.save(postman);
+		assertEquals(1, postmanRepository.count());
+
+		var aid = Aid.builder().certificate(Certificate.builder().build()).requestNumber("AR569").postman(postman)
+				.build();
+		aid = aidRepository.save(aid); // throw exception
+
 	}
 
 	@Test
@@ -58,12 +79,13 @@ public class SpringBootH2IntegrationTest2 {
 			assertEquals(1, postmanRepository.count());
 
 			var certificate = Certificate.builder().number("AR569").postman(postman).build();
-			certificateRepository.save(certificate);
+			certificate = certificateRepository.save(certificate);
 			assertEquals(1, certificateRepository.count());
 
-			var aid = Aid.builder().requestNumber("AR569").postman(postman).build();
-			aidRepository.save(aid);
+			var aid = Aid.builder().certificate(certificate).requestNumber("AR569").postman(postman).build();
+			aid = aidRepository.save(aid);
 			assertEquals(1, aidRepository.count());
+			assertEquals(certificate.getId(), aid.getCertificate().getId());
 
 			{
 				// create a letter for the certificate
@@ -95,10 +117,11 @@ public class SpringBootH2IntegrationTest2 {
 			assertEquals(3, letterRepository.count());
 		}
 
-		var lettersFilter = letterRepository.findAll(LetterSpecifications.idRH(idRH).and(LetterSpecifications.orderByMostRecent()),
-		// sort in the specification
+		var lettersFilter = letterRepository
+				.findAll(LetterSpecifications.idRH(idRH).and(LetterSpecifications.orderByMostRecent()),
+				// sort in the specification
 //				PageRequest.of(0, 20, Sort.by("createdAt").descending()));
-				PageRequest.of(0, 20));
+						PageRequest.of(0, 20));
 		assertEquals(2, lettersFilter.getTotalElements());
 
 		var letters = lettersFilter.stream().collect(Collectors.toList());
