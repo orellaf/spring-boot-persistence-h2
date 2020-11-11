@@ -2,11 +2,15 @@ package fr.lta;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +44,8 @@ class PaginationTest {
 	@Autowired
 	private PostmanRepository postmanRepository;
 
+	String[] HEADERS = { "createAt", "requestNumber" };
+
 	@AfterEach
 	void tearDown() throws Exception {
 	}
@@ -56,40 +62,48 @@ class PaginationTest {
 		certificate = certificateRepository.save(certificate);
 		assertEquals(1, certificateRepository.count());
 
-		int nbAids = 48;
+		int nbAids = 47;
 		for (int i = 0; i < nbAids; i++) {
-			aidRepository.save(Aid.builder().certificate(certificate)
-					.requestNumber("AR569"+i).postman(postman).build());
+			aidRepository
+					.save(Aid.builder().certificate(certificate).requestNumber("AR569" + i).postman(postman).build());
 			Thread.sleep(100);
-			
+
 		}
-		
+
 		assertEquals(nbAids, aidRepository.count());
-		
+
 		var pageSize = 10;
 		Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Direction.DESC, "createAt"));
 		Page<Aid> page = null;
 		var nbLoop = 0;
 		var aids = new ArrayList<Aid>();
-		do {
-			System.out.println("####");
-			System.out.println(pageable.getPageNumber());
-			page = aidRepository.findAll(pageable);
-			var content = page.getContent();
-			aids.addAll(content);
-			content.stream().forEach(System.out::println);
-			
-			 if(page.hasNext()) {
-				 pageable = page.nextOrLastPageable();
-			 }
-			 
-			 nbLoop++;
-			
-		} while (!Optional.ofNullable(page).map(Page::isLast).orElse(true));
+
+		try (FileWriter out = new FileWriter("book_new.csv");
+				CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS).withDelimiter(';'))) {
+			do {
+				System.out.println("####");
+				System.out.println(pageable.getPageNumber());
+				page = aidRepository.findAll(pageable);
+				var content = page.getContent();
+				aids.addAll(content);
+				for (var aid : content) {
+					System.out.println(aid);
+					printer.printRecord(List.of(
+							Optional.ofNullable(aid).map(Aid::getCreateAt)
+									.map(d -> d.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)).orElse(""),
+							Optional.ofNullable(aid).map(Aid::getRequestNumber).orElse("")));
+				}
+
+				if (page.hasNext()) {
+					pageable = page.nextOrLastPageable();
+				}
+
+				nbLoop++;
+
+			} while (!Optional.ofNullable(page).map(Page::isLast).orElse(true));
 //			(page != null && !page.isLast());
-		
-		
-		float a = ((float)nbAids)/((float)pageSize);
+		}
+		float a = ((float) nbAids) / ((float) pageSize);
 		assertEquals(Math.round(a), nbLoop);
 		assertEquals(nbAids, aids.size());
 	}
